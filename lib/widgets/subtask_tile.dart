@@ -11,7 +11,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:kanban/models/subtask.dart';
 import 'package:kanban/theme/app_theme.dart';
 
-class SubtaskTile extends StatelessWidget {
+class SubtaskTile extends StatefulWidget {
   const SubtaskTile({
     super.key,
     required this.subtask,
@@ -28,13 +28,21 @@ class SubtaskTile extends StatelessWidget {
   final Key slidekey;
   final VoidCallback ondelete;
 
+  @override
+  State<SubtaskTile> createState() => _SubtaskTileState();
+}
+
+class _SubtaskTileState extends State<SubtaskTile> {
+  bool isExpanded = false;
+
   String buildmetaline() {
-    final d = subtask.date;
+    final d = widget.subtask.date;
     String two(int n) => n.toString().padLeft(2, '0');
     final formatted =
         '${d.year}-${two(d.month)}-${two(d.day)} '
         '${two(d.hour)}:${two(d.minute)}';
-    final user = subtask.username.isEmpty ? 'unknown' : subtask.username;
+    final user =
+        widget.subtask.username.isEmpty ? 'unknown' : widget.subtask.username;
     return '$user  $formatted';
   }
 
@@ -44,16 +52,16 @@ class SubtaskTile extends StatelessWidget {
       dialogType: DialogType.warning,
       animType: AnimType.rightSlide,
       title: 'Delete subtask',
-      desc: 'Are you sure you want to delete "${subtask.title}"?',
+      desc: 'Are you sure you want to delete "${widget.subtask.title}"?',
       btnCancelOnPress: () {},
-      btnOkOnPress: ondelete,
+      btnOkOnPress: widget.ondelete,
     ).show();
   }
 
   @override
   Widget build(BuildContext context) {
     return Slidable(
-      key: slidekey,
+      key: widget.slidekey,
       startActionPane: ActionPane(
         motion: const ScrollMotion(),
         children: [
@@ -131,76 +139,78 @@ class SubtaskTile extends StatelessWidget {
                 Icon(Icons.star),
                 Text(""),
                 Text(""),
-                SizedBox(
-                  width: 10,
-                  height: 10,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(5),
+                if (isExpanded) ...[
+                  SizedBox(
+                    width: 10,
+                    height: 10,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(5),
+                      ),
                     ),
                   ),
-                ),
- SizedBox(
-                  width: 5,
-                  height: 70,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(5),
+                  SizedBox(
+                    width: 5,
+                    height: 70,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(5),
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(
-                  width: 10,
-                  height: 10,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(5),
+                  SizedBox(
+                    width: 10,
+                    height: 10,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(5),
+                      ),
                     ),
                   ),
-                ),
- SizedBox(
-                  width: 5,
-                  height: 70,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(5),
+                  SizedBox(
+                    width: 5,
+                    height: 70,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(5),
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(
-                  width: 10,
-                  height: 10,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(5),
+                  SizedBox(
+                    width: 10,
+                    height: 10,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(5),
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(
-                  width: 5,
-                  height: 70,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(5),
+                  SizedBox(
+                    width: 5,
+                    height: 70,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(5),
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(
-                  width: 10,
-                  height: 10,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(5),
+                  SizedBox(
+                    width: 10,
+                    height: 10,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(5),
+                      ),
                     ),
                   ),
-                ),
+                ],
               ],
             ),
             const SizedBox(width: 8),
@@ -210,8 +220,13 @@ class SubtaskTile extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ExpansionTile(
+                    onExpansionChanged: (expanded) {
+                      setState(() {
+                        isExpanded = expanded;
+                      });
+                    },
                     title: Text(
-                      subtask.title,
+                      widget.subtask.title,
                       style: const TextStyle(fontSize: 14),
                     ),
                     // subtitle: Text('Leading expansion arrow icon'),
@@ -220,25 +235,25 @@ class SubtaskTile extends StatelessWidget {
                       ListTile(
                         leading: const Icon(Icons.description),
                         title: const Text('Describtion'),
-                        subtitle: Text('Create by ${subtask.username}'),
+                        subtitle: Text('Create by ${widget.subtask.username}'),
                       ),
                       const Divider(height: 1, color: Colors.grey),
                       ListTile(
                         leading: const Icon(Icons.task_alt),
                         title: const Text('Goal'),
-                        subtitle: Text(goal),
+                        subtitle: Text(widget.goal),
                       ),
                       const Divider(height: 1, color: Colors.grey),
                       ListTile(
                         leading: const Icon(Icons.code),
                         title: const Text('Tech Stack'),
-                        subtitle: Text(TechStack),
+                        subtitle: Text(widget.TechStack),
                       ),
                       const Divider(height: 1, color: Colors.grey),
                       ListTile(
                         leading: const Icon(Icons.calendar_month),
                         title: const Text('Due Date'),
-                        subtitle: Text(dueDate),
+                        subtitle: Text(widget.dueDate),
                       ),
                     ],
                   ),
